@@ -53,7 +53,6 @@ class ImportScoreSpreadsheetCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $io->note($this->appKernel->getProjectDir());
         $spreadsheet = IOFactory::load($this->appKernel->getProjectDir() . $this::EXCEL_FILE);
         $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true); // here, the read data is turned into an array
         $questionRow = array_shift($sheetData);
@@ -76,7 +75,7 @@ class ImportScoreSpreadsheetCommand extends Command
         foreach ($questionRow as $colKey => &$questionItem) {
             $questionEntity = new Question();
             $questionEntity->setLabel($questionItem);
-            $questionEntity->setMaxScore($maxScoreRow[$colKey]);
+            $questionEntity->setMaxScore((int) $maxScoreRow[$colKey]);
             $this->entityManager->persist($questionEntity);
             $this->entityManager->flush();
             $questionIds[$colKey] = $questionEntity->getId();
@@ -90,9 +89,9 @@ class ImportScoreSpreadsheetCommand extends Command
             $studentId = $studentEntity->getId();
             foreach ($rowData as $colKey => $studentScore) {
                 $scoreEntity = new Score();
-                $scoreEntity->setValue($studentScore);
-                $scoreEntity->setStudentId($studentId);
-                $scoreEntity->setQuestionId($questionIds[$colKey]);
+                $scoreEntity->setValue((int) $studentScore);
+                $scoreEntity->setStudentId((int) $studentId);
+                $scoreEntity->setQuestionId((int) $questionIds[$colKey]);
                 $this->entityManager->persist($scoreEntity);
             }
             $this->entityManager->flush();
