@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello StudentGradesController!{% endblock %}
+{% block title %}Student Grades{% endblock %}
 
 {% block body %}
 <style>
@@ -16,13 +16,13 @@
     <table>
         <thead>
         <tr>
-            {% for heading in grades.header %}
+            {% for heading in gradesTable.header %}
                 <th>{{ heading }}</th>
             {% endfor %}
         </tr>
         </thead>
         <tbody>
-        {% for data in grades.data %}
+        {% for data in gradesTable.data %}
             <tr>
                 {% for value in data %}
                     <td>{{ value }}</td>
