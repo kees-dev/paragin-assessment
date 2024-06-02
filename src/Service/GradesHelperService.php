@@ -25,7 +25,11 @@ class GradesHelperService
         $this->scoreRepository = $scoreRepository;
     }
 
-    public function getAllGrades()
+    /**
+     * @return array
+     * @throws \Doctrine\ORM\Query\QueryException
+     */
+    public function getAllGradesTable(): array
     {
         $studentQuery = $this->studentRepository->createQueryBuilder('st')
             ->select('st.label', 'st.id')
@@ -33,13 +37,7 @@ class GradesHelperService
             ->getQuery();
         $students = $studentQuery->execute();
 
-        $scoreQuery = $this->scoreRepository->createQueryBuilder('sc')
-            //->where('sc.student_id', $studentId)
-            ->indexBy('sc', 'sc.student_id')
-            ->select('SUM(sc.value) AS total', 'sc.student_id')
-            ->groupBy('sc.student_id')
-            ->getQuery();
-        $totalScores = $scoreQuery->execute();
+        $totalScores = $this->getTotalScores();
 
         $questionQuery = $this->questionRepository->createQueryBuilder('q')
             ->select('SUM(q.max_score) AS total')
@@ -61,6 +59,19 @@ class GradesHelperService
         }
 
         return $gradesTable;
+    }
 
+    /**
+     * @return mixed
+     * @throws \Doctrine\ORM\Query\QueryException
+     */
+    public function getTotalScores(): array
+    {
+        $scoreQuery = $this->scoreRepository->createQueryBuilder('sc')
+            ->select('SUM(sc.value) AS total', 'sc.student_id')
+            ->indexBy('sc', 'sc.student_id')
+            ->groupBy('sc.student_id')
+            ->getQuery();
+         return $scoreQuery->execute();
     }
 }

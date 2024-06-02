@@ -14,9 +14,7 @@ class StudentGradesController extends AbstractController
 
     private GradesHelperService $gradesHelperService;
 
-    public function __construct(
-        GradesHelperService $gradesHelperService,
-    )
+    public function __construct(GradesHelperService $gradesHelperService)
     {
         $this->gradesHelperService = $gradesHelperService;
     }
@@ -24,8 +22,8 @@ class StudentGradesController extends AbstractController
     public function index(): Response
     {
         return $this->render('student_grades/index.html.twig', [
-            'controller_name' => 'StudentGradesController',
-            'grades' => $this->gradesHelperService->getAllGrades(),
+            'gradesTable' => $this->gradesHelperService->getAllGradesTable(),
         ]);
     }
+
 }
